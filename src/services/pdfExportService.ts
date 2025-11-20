@@ -86,7 +86,7 @@ const generatePDF = async (
   const imgWidthMm = canvas.width * pixelsToMm;
   const imgHeightMm = canvas.height * pixelsToMm;
 
-  const margin = 4;
+  const margin = 5;
   const availableWidth = pdfWidth - (margin * 2);
   const availableHeight = pdfHeight - (margin * 2);
 
