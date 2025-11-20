@@ -76,16 +76,16 @@ export function GradeTable() {
     <>
 
       <div className="grade-table-container relative  rounded-lg p-6 w-full h-full ">
-      {/* Gear button - absolute positioned at top right */}
-      {currentStudent?.subjects && (
-        <button
-          onClick={handleOpenReorder}
-          className="absolute top-4 left-4 p-2 hover:bg-gray-100 rounded-lg transition-colors  z-10 cursor-pointer print:hidden"
-          title="ترتيب الوحدات"
-        >
-          <img src="/settings.png" alt="Reorder Units" className="w-7 h-7" />
-        </button>
-      )}
+        {/* Gear button - absolute positioned at top right */}
+        {currentStudent?.subjects && (
+          <button
+            onClick={handleOpenReorder}
+            className="absolute top-4 left-4 p-2 hover:bg-gray-100 rounded-lg transition-colors  z-10 cursor-pointer print:hidden"
+            title="ترتيب الوحدات"
+          >
+            <img src="/settings.png" alt="Reorder Units" className="w-7 h-7" />
+          </button>
+        )}
 
         <div className="relative flex items-center">
           <div className="image flex w-20 h-20 bg-gray-300 ">
@@ -116,7 +116,7 @@ export function GradeTable() {
         <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
           <colgroup>
             <col style={{ width: '28%' }} />
-            <col style={{ width: '24%' }} />
+            <col style={{ width: '28%' }} />
             <col style={{ width: '16%' }} />
             <col style={{ width: '30%' }} />
           </colgroup>

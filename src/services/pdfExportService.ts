@@ -36,6 +36,9 @@ const PDF_STYLES = `
   .grade-table-container .bg-gray-300 {
     background-color: #d1d5db !important;
   }
+  .print\\:hidden {
+    display: none !important;
+  }
 `;
 
 /**
@@ -83,9 +86,9 @@ const generatePDF = async (
   const imgWidthMm = canvas.width * pixelsToMm;
   const imgHeightMm = canvas.height * pixelsToMm;
 
-  const margin = 2;
-  const availableWidth = pdfWidth;
-  const availableHeight = pdfHeight;
+  const margin = 4;
+  const availableWidth = pdfWidth - (margin * 2);
+  const availableHeight = pdfHeight - (margin * 2);
 
   const widthRatio = availableWidth / imgWidthMm;
   const heightRatio = availableHeight / imgHeightMm;
