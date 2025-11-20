@@ -1,0 +1,5 @@
+{
+  "buildCommand": "rm -rf node_modules && npm install && npm run build",
+  "framework": "nextjs",
+  "bunVersion": "1.x"
+}
