@@ -1,0 +1,68 @@
+{
+  "student": {
+    "name": "أحمد محمد علي",
+    "studentId": "2025/001",
+    "class": "الخامسة ابتدائي"
+  },
+  "subjects": [
+    {
+      "unit": "وحدة اللغة العربية",
+      "components": [
+        { "name": "التعبير الكتابي", "point": "18" },
+        { "name": "القراءة", "point": "19" },
+        { "name": "الإملاء", "point": "17" },
+        { "name": "الخط", "point": "16" },
+        { "name": "النقل", "point": "20" },
+        { "name": "الاستماع والتحدث", "point": "18" }
+      ]
+    },
+    {
+      "unit": "وحدة التربية الإسلامية",
+      "components": [
+        { "name": "التربية الإسلامية", "point": "18.5" }
+      ]
+    },
+    {
+      "unit": "وحدة النشاط العلمي",
+      "components": [
+        { "name": "النشاط العلمي", "point": "17" }
+      ]
+    },
+    {
+      "unit": "وحدة التربية الفنية",
+      "components": [
+        { "name": "التربية الفنية", "point": "16.5" }
+      ]
+    },
+    {
+      "unit": "وحدة اللغة الفرنسية",
+      "components": [
+        { "name": "Expression orale", "point": "16" },
+        { "name": "Structure de langue", "point": "17" },
+        { "name": "Etude de son / Phonologie", "point": "15" },
+        { "name": "Écriture/ copie", "point": "18" },
+        { "name": "Dictée", "point": "16" },
+        { "name": "Poésie", "point": "17" },
+        { "name": "Lecture", "point": "19" }
+      ]
+    },
+    {
+      "unit": "وحدة الرياضيات",
+      "components": [
+        { "name": "الرياضيات", "point": "19" }
+      ]
+    },
+    {
+      "unit": "وحدة الإنجليزية",
+      "components": [
+        { "name": "الإنجليزية", "point": "17.5" }
+      ]
+    },
+    {
+      "unit": "وحدة المعلوميات و الروبوتيك",
+      "components": [
+        { "name": "المعلوميات و الروبوتيك", "point": "18.5" }
+      ]
+    }
+  ]
+}
