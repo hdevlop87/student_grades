@@ -32,11 +32,10 @@ export function GradeTable() {
       confirmText: 'حفظ الترتيب',
       cancelText: 'إلغاء',
       onConfirm: () => {
-        const updatedStudents = students.map((student) =>
-          student.id === currentStudent.id
-            ? { ...student, subjects: reorderedSubjects }
-            : student
-        );
+        const updatedStudents = students.map((student) => ({
+          ...student,
+          subjects: reorderedSubjects
+        }));
         setStudents(updatedStudents);
       },
     });
