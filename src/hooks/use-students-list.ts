@@ -12,6 +12,8 @@ export function useStudentsList() {
 
    const [isExporting, setIsExporting] = useState(false);
    const [exportingId, setExportingId] = useState<string | null>(null);
+   const [isPrinting, setIsPrinting] = useState(false);
+   const [printingId, setPrintingId] = useState<string | null>(null);
 
    const handleStudentClick = (studentId: string) => {
       setCurrentStudentId(studentId);
@@ -57,59 +59,111 @@ export function useStudentsList() {
       }, 100);
    };
 
-   const handleSaveAll = async () => {
+   const handlePrintAll = async () => {
       if (students.length === 0) {
-         toast.error('لا توجد بيانات لحفظها');
+         toast.error('لا توجد بيانات للطباعة');
          return;
       }
 
-      setIsExporting(true);
+      setIsPrinting(true);
+      let printedCount = 0;
 
-      try {
-         const zip = new JSZip();
-         for (let i = 0; i < students.length; i++) {
-            const student = students[i];
-            setCurrentStudentId(student.studentId);
-
-            await new Promise(resolve => setTimeout(resolve, 300));
-
-            try {
-               const gradeTableElement = document.querySelector('.grade-table-container') as HTMLElement;
-               if (gradeTableElement) {
-                  const { blob, filename } = await generateStudentPDFBlob(
-                     gradeTableElement,
-                     student.name,
-                     student.studentId
-                  );
-                  zip.file(filename, blob);
-               }
-            } catch (error) {
-               console.error(`Error generating PDF for ${student.name}:`, error);
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 200));
+      const printNextStudent = async (index: number) => {
+         if (index >= students.length) {
+            setIsPrinting(false);
+            setPrintingId(null);
+            toast.success(`تمت طباعة ${printedCount} من ${students.length} تلميذ بنجاح`);
+            return;
          }
 
-         const zipBlob = await zip.generateAsync({ type: 'blob' });
-         const url = URL.createObjectURL(zipBlob);
-         const link = document.createElement('a');
-         link.href = url;
+         const student = students[index];
+         setCurrentStudentId(student.studentId);
+         setPrintingId(student.studentId);
 
-         const date = new Date().toISOString().split('T')[0];
-         link.download = `بيانات_التلاميذ_${date}.zip`;
+         // Wait for DOM to update
+         await new Promise(resolve => setTimeout(resolve, 300));
 
-         document.body.appendChild(link);
-         link.click();
-         document.body.removeChild(link);
-         URL.revokeObjectURL(url);
+         try {
+            const gradeTableElement = document.querySelector('.grade-table-container') as HTMLElement;
+            if (!gradeTableElement) {
+               console.error('Grade table not found');
+               printNextStudent(index + 1);
+               return;
+            }
 
-         toast.success(`تم حفظ ${students.length} ملف PDF في ملف مضغوط بنجاح`);
-      } catch (error) {
-         console.error('Error creating ZIP file:', error);
-         toast.error('حدث خطأ أثناء إنشاء الملف المضغوط');
-      } finally {
-         setIsExporting(false);
-      }
+            // Create hidden iframe for printing
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = 'none';
+            document.body.appendChild(iframe);
+
+            const iframeDoc = iframe.contentWindow?.document;
+            if (iframeDoc) {
+               iframeDoc.open();
+
+               // Clone styles from parent document
+               const styles = Array.from(document.styleSheets)
+                  .map(sheet => {
+                     try {
+                        return Array.from(sheet.cssRules)
+                           .map(rule => rule.cssText)
+                           .join('\n');
+                     } catch (e) {
+                        return '';
+                     }
+                  })
+                  .join('\n');
+
+               iframeDoc.write(`
+                  <!DOCTYPE html>
+                  <html dir="rtl" lang="ar">
+                     <head>
+                        <meta charset="UTF-8">
+                        <title>بيان نقط - ${student.name}</title>
+                        <style>${styles}</style>
+                        <style>
+                           @media print {
+                              body { margin: 0; padding: 20px; }
+                              @page { margin: 10mm; }
+                           }
+                        </style>
+                     </head>
+                     <body>
+                        ${gradeTableElement.outerHTML}
+                     </body>
+                  </html>
+               `);
+               iframeDoc.close();
+
+               // Wait for iframe to load
+               await new Promise(resolve => setTimeout(resolve, 500));
+
+               // Print
+               iframe.contentWindow?.focus();
+               iframe.contentWindow?.print();
+
+               printedCount++;
+
+               // Wait for print dialog to be handled
+               await new Promise(resolve => setTimeout(resolve, 1000));
+
+               // Cleanup iframe
+               document.body.removeChild(iframe);
+
+               // Print next student
+               printNextStudent(index + 1);
+            }
+         } catch (error) {
+            console.error(`Error printing for ${student.name}:`, error);
+            toast.error(`خطأ في طباعة ${student.name}`);
+            printNextStudent(index + 1);
+         }
+      };
+
+      // Start printing from first student
+      printNextStudent(0);
    };
 
    return {
@@ -118,9 +172,11 @@ export function useStudentsList() {
       currentStudent,
       isExporting,
       exportingId,
+      isPrinting,
+      printingId,
       handleStudentClick,
       handlePrintStudent,
       handleExportStudentPDF,
-      handleSaveAll,
+      handlePrintAll,
    };
 }

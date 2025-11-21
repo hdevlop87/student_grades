@@ -32,10 +32,22 @@ export function GradeTable() {
       confirmText: 'حفظ الترتيب',
       cancelText: 'إلغاء',
       onConfirm: () => {
-        const updatedStudents = students.map((student) => ({
-          ...student,
-          subjects: reorderedSubjects
-        }));
+        // Create a mapping of new order based on unit names
+        const newOrder = reorderedSubjects.map(s => s.unit);
+
+        const updatedStudents = students.map((student) => {
+          // Reorder each student's subjects based on the new order
+          // but preserve their individual grades/points
+          const reorderedStudentSubjects = newOrder
+            .map(unitName => student.subjects.find(s => s.unit === unitName))
+            .filter((s): s is SubjectData => s !== undefined);
+
+          return {
+            ...student,
+            subjects: reorderedStudentSubjects
+          };
+        });
+
         setStudents(updatedStudents);
       },
     });

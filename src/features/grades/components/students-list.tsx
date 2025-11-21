@@ -10,10 +10,12 @@ export function StudentsList() {
       currentStudentId,
       isExporting,
       exportingId,
+      isPrinting,
+      printingId,
       handleStudentClick,
       handlePrintStudent,
       handleExportStudentPDF,
-      handleSaveAll,
+      handlePrintAll,
    } = useStudentsList();
 
    if (students.length === 0) {
@@ -35,19 +37,19 @@ export function StudentsList() {
             </div>
 
             <Button
-               onClick={handleSaveAll}
-               disabled={isExporting}
-               className="bg-blue-600 text-white px-6 h-9 cursor-pointer font-bold hover:bg-blue-700 transition shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+               onClick={handlePrintAll}
+               disabled={isPrinting}
+               className="bg-green-600 text-white px-6 h-9 cursor-pointer font-bold hover:bg-green-700 transition shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
             >
-               {isExporting ? (
+               {isPrinting ? (
                   <>
                      <span>⏳</span>
-                     <span>جاري الحفظ...</span>
+                     <span>جاري الطباعة...</span>
                   </>
                ) : (
                   <>
-                     <img src="/save.png" alt="حفظ" className="w-5 h-5" />
-                     <span>حفظ الكل</span>
+                     <img src="/printer.png" alt="طباعة" className="w-5 h-5" />
+                     <span>طباعة الكل</span>
                   </>
                )}
             </Button>
@@ -58,9 +60,12 @@ export function StudentsList() {
                <div
                   key={student.studentId}
                   onClick={() => handleStudentClick(student.studentId)}
-                  className={`flex justify-between items-center gap-2 p-3 rounded-lg border cursor-pointer transition ${currentStudentId === student.studentId
-                     ? 'bg-green-200 border-green-600'
-                     : 'bg-gray-50 border-gray-300 hover:border-green-400 hover:bg-green-50'
+                  className={`flex justify-between items-center gap-2 p-3 rounded-lg border cursor-pointer transition ${
+                     printingId === student.studentId
+                        ? 'bg-yellow-200 border-yellow-600 ring-2 ring-yellow-400'
+                        : currentStudentId === student.studentId
+                        ? 'bg-green-200 border-green-600'
+                        : 'bg-gray-50 border-gray-300 hover:border-green-400 hover:bg-green-50'
                      }`}
                >
                   <div className="flex gap-2 items-center">
