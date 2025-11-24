@@ -9,7 +9,7 @@ export default function GradesPage() {
         <StudentsList />
       </div>
 
-      <div className="col-span-6 bg-white rounded-lg shadow-sm overflow-hidden h-full ">
+      <div className="col-span-6 overflow-hidden  ">
         <GradeTable />
       </div>
 

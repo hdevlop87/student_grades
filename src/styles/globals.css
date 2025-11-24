@@ -246,7 +246,6 @@ table {
   .grade-table-container {
     display: block !important;
     margin: 0 !important;
-    padding: 3rem !important;
     width: 100% !important;
     height: auto !important;
     box-shadow: none !important;
@@ -258,3 +257,11 @@ table {
     size: A4;
   }
 }
+
+  .grade-table-container {
+    width: 21cm;
+    height: 29.7cm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 0.5cm rgba(0,0,0,0.1);
+  }
