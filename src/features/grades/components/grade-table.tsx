@@ -81,10 +81,10 @@ export function GradeTable() {
 
         setStudents(updatedStudents);
 
-        // Save the order to localStorage for the current student
-        if (currentStudent?.studentId) {
-          saveSubjectOrder(currentStudent.studentId, newOrder);
-        }
+        // Save the order to localStorage for ALL students
+        students.forEach((student) => {
+          saveSubjectOrder(student.studentId, newOrder);
+        });
       },
     });
   };
