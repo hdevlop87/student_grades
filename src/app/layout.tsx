@@ -30,7 +30,7 @@ export default function RootLayout({
 
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body suppressHydrationWarning className={`bg-white w-screen h-screen ${lora.className} antialiased print:p-0 print:bg-white`}>
+      <body suppressHydrationWarning className={`bg-white w-screen  h-screen overflow-hidden ${lora.className} antialiased print:p-0 print:bg-white`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -38,7 +38,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <div className="print:hidden">
+          <div className="print:hidden ">
             <AsyncMultiDialog />
           </div>
         </ThemeProvider>

@@ -55,6 +55,28 @@ export const useDialog = () => {
     }
   };
 
+  const alert = async (options) => {
+    try {
+      const result = await pushDialog({
+        title: options.title,
+        description: options.description,
+        children: options.children,
+        size: options.size || 'sm',
+        className: options.className,
+        primaryButton: {
+          text: options.confirmText || 'OK',
+          variant: options.confirmVariant || 'default',
+          onConfirm: options.onConfirm,
+        },
+        showButtons: true,
+      });
+
+      return result;
+    } catch (error) {
+      return null;
+    }
+  };
+
   const confirmDelete = async (options) => {
     try {
       const result = await pushDialog({
@@ -84,6 +106,7 @@ export const useDialog = () => {
   };
 
   return {
+    alert,
     custom,
     openDialog: custom,
     confirmDelete,

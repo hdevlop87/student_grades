@@ -20,7 +20,7 @@ export function StudentsList() {
 
    if (students.length === 0) {
       return (
-         <div className=" flex flex-col items-center gap-3 p-4 w-full h-screen overflow-y-auto">
+         <div className="bg-white rounded-xl flex flex-col items-center gap-3 p-4 w-full h-screen overflow-y-auto">
             <Label className='text-lg mt-10'>  لم يتم تحميل بيانات بعد</Label>
             <img src="/noData.png" alt="Students List" className="w-20 h-20"></img>
          </div>
@@ -28,7 +28,7 @@ export function StudentsList() {
    }
 
    return (
-      <div className="  flex flex-col gap-3 p-4  h-screen overflow-y-auto w-full">
+      <div className=" bg-white rounded-xl pb-16 flex flex-col gap-3 p-4  h-screen overflow-y-auto w-full print:hidden">
          <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center justify-center">
                <img src="/list.png" alt="Students List" className="w-8 h-8"></img>

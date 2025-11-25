@@ -233,8 +233,10 @@ table {
 
 
 @media print {
+
   /* Reset body and html for print */
-  html, body {
+  html,
+  body {
     background-color: #ffffff !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -258,10 +260,13 @@ table {
   }
 }
 
-  .grade-table-container {
-    width: 21cm;
-    height: 29.7cm;
-    margin: 0 auto;
-    background: white;
-    box-shadow: 0 0 0.5cm rgba(0,0,0,0.1);
-  }
+.grade-table-container {
+  width: 21cm;
+  height: 29.7cm;
+  min-width: 21cm;
+  min-height: 29.7cm;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.1);
+
+}

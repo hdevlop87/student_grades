@@ -1,13 +1,29 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { useFileProcessor } from '@/hooks/use-file-processor';
+import { useState, useEffect, RefObject } from 'react';
 import { Button } from '@/components/ui/button';
 
-export function FileUpload() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+interface FileUploadProps {
+  fileInputRef: RefObject<HTMLInputElement>;
+  fileProcessor: {
+    processFiles: (files: FileList | null) => Promise<any>;
+    isProcessing: boolean;
+    error: string | null;
+    filesInfo: Array<{ name: string; size: string }>;
+    clearData: () => void;
+  };
+}
+
+export function FileUpload({ fileInputRef, fileProcessor }: FileUploadProps) {
   const [hasFiles, setHasFiles] = useState(false);
-  const { processFiles, isProcessing, error, filesInfo, clearData } = useFileProcessor();
+  const { processFiles, isProcessing, error, filesInfo, clearData } = fileProcessor;
+
+  // Reset hasFiles when filesInfo is cleared
+  useEffect(() => {
+    if (filesInfo.length === 0) {
+      setHasFiles(false);
+    }
+  }, [filesInfo]);
 
   const handleFileChange = () => {
     const files = fileInputRef.current?.files;
@@ -28,7 +44,7 @@ export function FileUpload() {
   };
 
   return (
-    <div className="flex w-full flex-col gap-4  h-screen p-4 rounded-lg  relative overflow-y-auto">
+    <div className="flex w-full flex-col gap-4 bg-white h-screen p-4 rounded-lg  relative overflow-y-auto print:hidden">
 
       <div className="absolute w-full top-0 right-0 text-center bg-blue-100 p-2 rounded-t-lg">
         <div className="flex w-full items-center gap-2 justify-center">
@@ -70,7 +86,7 @@ export function FileUpload() {
         <Button
           onClick={handleProcessFiles}
           disabled={!hasFiles || isProcessing}
-          className="w-full bg-blue-600 text-md text-white h-12 rounded-lg font-bold hover:bg-blue-700 transition shadow-md  disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-tertiary text-md text-white h-12 rounded-lg font-bold hover:bg-tertiary/80 transition shadow-md  disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isProcessing ? (
             <>

@@ -3,9 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useStudentsStore } from '@/stores/use-students-store';
 import { useTableStyleStore } from '@/stores/use-table-style-store';
-import type { SubjectData } from '@/types/student';
-import { useDialog } from '@/components/NMultiDialog/useDialog';
-import { UnitReorderModal } from './UnitReorderModal';
 import { TableStyleMenu } from './TableStyleMenu';
 
 export function GradeTable() {
@@ -13,9 +10,7 @@ export function GradeTable() {
   const currentStudent = useStudentsStore((state) => state.getCurrentStudent());
   const setStudents = useStudentsStore((state) => state.setStudents);
   const students = useStudentsStore((state) => state.students);
-  const saveSubjectOrder = useStudentsStore((state) => state.saveSubjectOrder);
   const applySavedOrder = useStudentsStore((state) => state.applySavedOrder);
-  const dialog = useDialog();
 
   const paddingY = useTableStyleStore((state) => state.paddingY);
   const fontSize = useTableStyleStore((state) => state.fontSize);
@@ -48,48 +43,7 @@ export function GradeTable() {
     setContextMenu({ x: e.clientX, y: e.clientY });
   };
 
-  const handleOpenReorder = async () => {
-    if (!currentStudent?.subjects) return;
-
-    let reorderedSubjects: SubjectData[] = currentStudent.subjects;
-
-    await dialog.custom({
-      title: 'ترتيب الوحدات الدراسية',
-      description: 'اسحب الوحدات لإعادة ترتيبها',
-      children: (
-        <UnitReorderModal
-          subjects={currentStudent.subjects}
-          onReorder={(orderedSubjects) => {
-            reorderedSubjects = orderedSubjects;
-          }}
-        />
-      ),
-      size: 'lg',
-      confirmText: 'حفظ الترتيب',
-      cancelText: 'إلغاء',
-      onConfirm: () => {
-        const newOrder = reorderedSubjects.map(s => s.unit);
-        const updatedStudents = students.map((student) => {
-          const reorderedStudentSubjects = newOrder
-            .map(unitName => student.subjects.find(s => s.unit === unitName))
-            .filter((s): s is SubjectData => s !== undefined);
-          return {
-            ...student,
-            subjects: reorderedStudentSubjects
-          };
-        });
-
-        setStudents(updatedStudents);
-
-        // Save the order to localStorage for ALL students
-        students.forEach((student) => {
-          saveSubjectOrder(student.studentId, newOrder);
-        });
-      },
-    });
-  };
-
-  const renderTableRows = (subjects: SubjectData[]) => {
+  const renderTableRows = (subjects) => {
     const cellStyle = {
       paddingTop: `${paddingY}px`,
       paddingBottom: `${paddingY}px`,
@@ -131,23 +85,13 @@ export function GradeTable() {
     <>
 
       <div
-        className="grade-table-container relative rounded-lg w-full h-full"
+        className="grade-table-container bg-white relative rounded-lg w-full h-screen overflow-y-auto p-4"
         style={{
           paddingTop: `${pagePaddingTop}px`,
           paddingLeft: `${pagePaddingX}px`,
           paddingRight: `${pagePaddingX}px`,
         }}
       >
-
-        {currentStudent?.subjects && (
-          <button
-            onClick={handleOpenReorder}
-            className="absolute top-4 left-4 p-2 hover:bg-gray-100 rounded-lg transition-colors  z-10 cursor-pointer print:hidden"
-            title="ترتيب الوحدات"
-          >
-            <img src="/settings.png" alt="Reorder Units" className="w-7 h-7" />
-          </button>
-        )}
 
         <div className="relative flex items-center">
           <div className="image flex w-20 h-20 bg-gray-300 ">
