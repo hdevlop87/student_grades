@@ -24,8 +24,75 @@ export function useStudentsList() {
       e.stopPropagation();
       setCurrentStudentId(studentId);
       setTimeout(() => {
-         window.print();
-      }, 100);
+         const containerSelector = viewMode === 'grades'
+            ? '.a4-page-container'
+            : viewMode === 'exam-schedule'
+            ? '.a4-page-container'
+            : '.dl-envelope-container';
+
+         const containerElement = document.querySelector(containerSelector) as HTMLElement;
+         if (!containerElement) {
+            window.print();
+            return;
+         }
+
+         const iframe = document.createElement('iframe');
+         iframe.style.position = 'fixed';
+         iframe.style.left = '-10000px';
+         iframe.style.top = '0';
+         iframe.style.width = viewMode === 'letter' ? '229mm' : '21cm';
+         iframe.style.height = viewMode === 'letter' ? '115mm' : '29.7cm';
+         iframe.style.border = 'none';
+         document.body.appendChild(iframe);
+
+         const iframeDoc = iframe.contentWindow?.document;
+         if (!iframeDoc) return;
+
+         const headStyles = Array.from(
+            document.head.querySelectorAll('style, link[rel="stylesheet"]')
+         )
+            .map(node => node.outerHTML)
+            .join('\n');
+
+         const pageSize = viewMode === 'letter'
+            ? 'size: 229mm 115mm; margin: 0;'
+            : 'size: A4; margin: 0;';
+
+         iframeDoc.open();
+         iframeDoc.write(`
+            <!DOCTYPE html>
+            <html dir="rtl" lang="ar">
+               <head>
+                  <meta charset="UTF-8">
+                  <base href="${window.location.origin}/">
+                  ${headStyles}
+                  <style>
+                     @media print {
+                        body { margin: 0; padding: 0; background: white; }
+                        @page { ${pageSize} }
+                     }
+                     body { margin: 0; padding: 0; background: white; }
+                     .a4-page-container, .dl-envelope-container {
+                        height: auto !important;
+                        min-height: auto !important;
+                        max-height: none !important;
+                        overflow: visible !important;
+                        max-width: none !important;
+                        box-shadow: none !important;
+                     }
+                  </style>
+               </head>
+               <body>${containerElement.outerHTML}</body>
+            </html>
+         `);
+         iframeDoc.close();
+
+         setTimeout(() => {
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+            setTimeout(() => document.body.removeChild(iframe), 1000);
+         }, 800);
+      }, 150);
    };
 
    const handleExportStudentPDF = async (studentId: string, e: React.MouseEvent) => {
@@ -71,7 +138,7 @@ export function useStudentsList() {
       try {
          // Get the appropriate selector based on view mode
          const containerSelector = viewMode === 'grades'
-            ? '.grade-table-container'
+            ? '.a4-page-container'
             : viewMode === 'exam-schedule'
             ? '.a4-page-container'
             : '.dl-envelope-container';
@@ -129,10 +196,8 @@ export function useStudentsList() {
 
             // Set page size and margins based on view mode
             const pageSize = viewMode === 'letter'
-               ? ' margin: 0;'
-               : viewMode === 'exam-schedule'
-               ? 'size: A4; margin: 10mm;'
-               : 'size: A4; margin: 10mm;';
+               ? 'size: 229mm 115mm; margin: 0;'
+               : 'size: A4; margin: 0;';
 
             iframeDoc.write(`
                <!DOCTYPE html>
@@ -149,6 +214,14 @@ export function useStudentsList() {
                               width: 100%;
                               height: 100%;
                            }
+                        }
+                        .a4-page-container, .dl-envelope-container {
+                           height: auto !important;
+                           min-height: auto !important;
+                           max-height: none !important;
+                           overflow: visible !important;
+                           max-width: none !important;
+                           box-shadow: none !important;
                         }
                      </style>
                   </head>
