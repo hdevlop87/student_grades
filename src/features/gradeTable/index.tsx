@@ -105,14 +105,18 @@ export function GradeTable() {
         }}
       >
 
-        <div className="relative flex items-center">
-          <div className="image flex w-20 h-20 bg-gray-300 ">
-            <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+        <div className="relative flex items-center justify-between">
+          <div className="w-20 h-20">
+            <img src="/leftLogo.png" alt="Left Logo" className="w-full h-full object-contain" />
           </div>
 
-          <div className="absolute left-0 right-0 flex flex-col text-center">
+          <div className="flex flex-col text-center">
             <h1 className="text-2xl text-gray-800">{buildDocumentTitle()}</h1>
             <div className="text-lg text-gray-700">الموسم الدراسي 2025/2026</div>
+          </div>
+
+          <div className="w-20 h-20">
+            <img src="/rightLogo.png" alt="Right Logo" className="w-full h-full object-contain" />
           </div>
         </div>
 
