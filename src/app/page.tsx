@@ -1,5 +1,5 @@
-import GradesPage from '@/features/grades/page';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return <GradesPage />;
+export default function HomePage() {
+  redirect('/home');
 }

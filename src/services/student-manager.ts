@@ -1,14 +1,21 @@
 import { XlsxTable } from 'xlsx-manager';
 import type { StudentJSON } from '@/types/student';
 
+export interface ExamInfo {
+  exam: string;    // raw value from نقط : (e.g. "المراقبة الأولى" or "1")
+  trimestre: string; // raw value from الدورة : (e.g. "1" or "الأولى")
+}
+
 export class StudentManager {
   private studentsMap = new Map<string, StudentJSON>();
   private processedFilesCount = 0;
   private selectedStudentId: string | null = null;
+  private examInfo: ExamInfo | null = null;
 
   async processFiles(sources: (File | string)[]): Promise<StudentJSON[]> {
     this.studentsMap.clear();
     this.processedFilesCount = 0;
+    this.examInfo = null;
 
     for (const source of sources) {
       await this.processFile(source);
@@ -18,6 +25,10 @@ export class StudentManager {
     return Array.from(this.studentsMap.values());
   }
 
+  getExamInfo(): ExamInfo | null {
+    return this.examInfo;
+  }
+
   private async processFile(source: File | string) {
     const xlsx = new XlsxTable();
     await xlsx.loadXlsx(source);
@@ -25,6 +36,15 @@ export class StudentManager {
     const className = xlsx.meta('القسم :') || '';
     const subjectName = xlsx.meta('المادة') || '';
     const unit = `وحدة ${subjectName}`;
+
+    // Extract exam/trimestre info from the first file only
+    if (!this.examInfo) {
+      const examRaw = xlsx.meta('نقط :') || '';
+      const trimistreRaw = xlsx.meta('الدورة :') || '';
+      if (examRaw || trimistreRaw) {
+        this.examInfo = { exam: examRaw, trimestre: trimistreRaw };
+      }
+    }
 
     const schema = {
       studentId: "رقم التلميذ",
@@ -180,5 +200,6 @@ export class StudentManager {
     this.studentsMap.clear();
     this.processedFilesCount = 0;
     this.selectedStudentId = null;
+    this.examInfo = null;
   }
 }

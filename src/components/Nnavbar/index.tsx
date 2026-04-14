@@ -9,11 +9,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useStudentsStore } from '@/stores/use-students-store';
+import { useViewModeStore } from '@/stores/use-view-mode-store';
 import { useDialog } from '@/components/NMultiDialog/useDialog';
-import { UnitReorderModal } from '@/features/grades/components/UnitReorderModal';
+import { UnitReorderModal } from '@/features/gradeTable/UnitReorderModal';
 import { RemovePasswordDialog } from '@/features/remove-password/components/RemovePasswordDialog';
 import type { SubjectData } from '@/types/student';
-import { GraduationCap, Folder, FolderOpen, Save, Trash2, Edit, Info, Settings, Unlock } from 'lucide-react';
+import { GraduationCap, Folder, FolderOpen, Save, Trash2, Edit, Info, Settings, Unlock, TableProperties, Calendar, FileText } from 'lucide-react';
 
 interface NavbarProps {
   onOpenFiles?: () => void;
@@ -26,6 +27,8 @@ export function Navbar({ onOpenFiles, onSaveData, onClearData }: NavbarProps) {
   const students = useStudentsStore((state) => state.students);
   const setStudents = useStudentsStore((state) => state.setStudents);
   const saveSubjectOrder = useStudentsStore((state) => state.saveSubjectOrder);
+  const viewMode = useViewModeStore((state) => state.viewMode);
+  const setViewMode = useViewModeStore((state) => state.setViewMode);
   const dialog = useDialog();
 
   const handleOpenReorder = async () => {
@@ -160,6 +163,37 @@ export function Navbar({ onOpenFiles, onSaveData, onClearData }: NavbarProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-1 border rounded-md p-1">
+            <Button
+              variant={viewMode === 'grades' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('grades')}
+              className="gap-2"
+            >
+              <TableProperties className="w-4 h-4" />
+              <span>النقط</span>
+            </Button>
+            <Button
+              variant={viewMode === 'exam-schedule' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('exam-schedule')}
+              className="gap-2"
+            >
+              <Calendar className="w-4 h-4" />
+              <span>جدول الامتحانات</span>
+            </Button>
+            <Button
+              variant={viewMode === 'letter' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('letter')}
+              className="gap-2"
+            >
+              <FileText className="w-4 h-4" />
+              <span>الشهادة</span>
+            </Button>
+          </div>
 
           {/* Remove Password - Separate Button */}
           <Button

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useStudentsStore } from '@/stores/use-students-store';
+import { useViewModeStore } from '@/stores/use-view-mode-store';
 import { exportCurrentStudentPDF } from '@/services/pdfExportService';
 
 export function useStudentsList() {
@@ -8,6 +9,7 @@ export function useStudentsList() {
    const currentStudentId = useStudentsStore((state) => state.currentStudentId);
    const currentStudent = useStudentsStore((state) => state.getCurrentStudent());
    const setCurrentStudentId = useStudentsStore((state) => state.setCurrentStudentId);
+   const viewMode = useViewModeStore((state) => state.viewMode);
 
    const [isExporting, setIsExporting] = useState(false);
    const [exportingId, setExportingId] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export function useStudentsList() {
 
       setTimeout(async () => {
          try {
-            const gradeTableElement = document.querySelector('.grade-table-container') as HTMLElement;
+            const gradeTableElement = document.querySelector('.dl-envelope-container') as HTMLElement;
             if (!gradeTableElement) {
                toast.error('لم يتم العثور على جدول الدرجات');
                return;
@@ -67,6 +69,13 @@ export function useStudentsList() {
       setIsPrinting(true);
 
       try {
+         // Get the appropriate selector based on view mode
+         const containerSelector = viewMode === 'grades'
+            ? '.grade-table-container'
+            : viewMode === 'exam-schedule'
+            ? '.a4-page-container'
+            : '.dl-envelope-container';
+
          // Collect all student HTML
          const allStudentsHTML: string[] = [];
 
@@ -78,9 +87,9 @@ export function useStudentsList() {
             // Wait for DOM to update
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            const gradeTableElement = document.querySelector('.grade-table-container') as HTMLElement;
-            if (gradeTableElement) {
-               allStudentsHTML.push(gradeTableElement.outerHTML);
+            const containerElement = document.querySelector(containerSelector) as HTMLElement;
+            if (containerElement) {
+               allStudentsHTML.push(containerElement.outerHTML);
             }
          }
 
@@ -118,6 +127,13 @@ export function useStudentsList() {
                `)
                .join('');
 
+            // Set page size and margins based on view mode
+            const pageSize = viewMode === 'letter'
+               ? ' margin: 0;'
+               : viewMode === 'exam-schedule'
+               ? 'size: A4; margin: 10mm;'
+               : 'size: A4; margin: 10mm;';
+
             iframeDoc.write(`
                <!DOCTYPE html>
                <html dir="rtl" lang="ar">
@@ -128,7 +144,7 @@ export function useStudentsList() {
                      <style>
                         @media print {
                            body { margin: 0; padding: 0; }
-                           @page { margin: 10mm; }
+                           @page { ${pageSize} }
                            .student-page {
                               width: 100%;
                               height: 100%;

@@ -1,15 +1,14 @@
 'use client';
 
 import { useRef } from 'react';
-import { StudentsList } from './components/students-list';
-import { GradeTable } from './components/grade-table';
-import { FileUpload } from './components/file-upload';
 import { Navbar } from '@/components/Nnavbar';
 import { useFileProcessor } from '@/hooks/use-file-processor';
 import { useStudentsList } from '@/hooks/use-students-list';
 import { toast } from 'sonner';
+import { StudentsList } from '@/features/studentsList';
+import { FileUpload } from '@/features/fileUpload';
 
-export default function GradesPage() {
+export default function AcademicDataLayout({ children }: { children: React.ReactNode }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileProcessor = useFileProcessor();
   const { handlePrintAll, students } = useStudentsList();
@@ -46,13 +45,11 @@ export default function GradesPage() {
         onClearData={handleClearData}
       />
       <div className="flex justify-between gap-3 w-full h-screen pb-20 overflow-y-auto bg-gray-100 p-3 print:p-0 print:grid-cols-1">
-  
-          <StudentsList />
-    
-          <GradeTable />
-    
-          <FileUpload fileInputRef={fileInputRef} fileProcessor={fileProcessor} />
-     
+        <StudentsList />
+
+        {children}
+
+        <FileUpload fileInputRef={fileInputRef} fileProcessor={fileProcessor} />
       </div>
     </>
   );

@@ -1,17 +1,20 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { StudentJSON, SubjectData } from '@/types/student';
+import type { ExamInfo } from '@/services/student-manager';
 
 interface StudentsState {
   students: StudentJSON[];
   currentStudentId: string | null;
   subjectOrders: Record<string, string[]>; // Map of studentId -> ordered unit names
+  examInfo: ExamInfo | null;
   setStudents: (students: StudentJSON[]) => void;
   setCurrentStudentId: (id: string | null) => void;
   getCurrentStudent: () => StudentJSON | null;
   clearStudents: () => void;
   saveSubjectOrder: (studentId: string, order: string[]) => void;
   applySavedOrder: (subjects: SubjectData[], studentId: string) => SubjectData[];
+  setExamInfo: (info: ExamInfo | null) => void;
 }
 
 export const useStudentsStore = create<StudentsState>()(
@@ -20,8 +23,10 @@ export const useStudentsStore = create<StudentsState>()(
       students: [],
       currentStudentId: null,
       subjectOrders: {},
+      examInfo: null,
 
       setStudents: (students) => set({ students }),
+      setExamInfo: (info) => set({ examInfo: info }),
 
       setCurrentStudentId: (id) => set({ currentStudentId: id }),
 
@@ -31,7 +36,7 @@ export const useStudentsStore = create<StudentsState>()(
         return students.find(s => s.studentId === currentStudentId) || null;
       },
 
-      clearStudents: () => set({ students: [], currentStudentId: null, subjectOrders: {} }),
+      clearStudents: () => set({ students: [], currentStudentId: null, subjectOrders: {}, examInfo: null }),
 
       saveSubjectOrder: (studentId, order) => {
         const { subjectOrders } = get();

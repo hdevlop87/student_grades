@@ -10,6 +10,7 @@ export function useFileProcessor() {
 
   const setStudents = useStudentsStore(state => state.setStudents);
   const setCurrentStudentId = useStudentsStore(state => state.setCurrentStudentId);
+  const setExamInfo = useStudentsStore(state => state.setExamInfo);
 
   const managerRef = useRef(new StudentManager());
 
@@ -39,6 +40,7 @@ export function useFileProcessor() {
 
       // Update Zustand store
       setStudents(students);
+      setExamInfo(managerRef.current.getExamInfo());
 
       // Select first student by default
       if (students.length > 0) {
@@ -64,6 +66,7 @@ export function useFileProcessor() {
     managerRef.current.clear();
     setStudents([]);
     setCurrentStudentId(null);
+    setExamInfo(null);
     setFilesInfo([]);
     setError(null);
   };

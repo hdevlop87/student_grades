@@ -12,6 +12,8 @@ export function GradeTable() {
   const students = useStudentsStore((state) => state.students);
   const applySavedOrder = useStudentsStore((state) => state.applySavedOrder);
 
+  const examInfo = useStudentsStore((state) => state.examInfo);
+
   const paddingY = useTableStyleStore((state) => state.paddingY);
   const fontSize = useTableStyleStore((state) => state.fontSize);
   const pagePaddingTop = useTableStyleStore((state) => state.pagePaddingTop);
@@ -37,6 +39,16 @@ export function GradeTable() {
       setStudents(updatedStudents);
     }
   }, [currentStudent?.studentId]);
+
+  const buildDocumentTitle = (): string => {
+    if (!examInfo) return 'بيان نقط  المراقبة : الفرض الأول - الدورة الأولى';
+    const ordinals: Record<string, string> = { '1': 'الأولى', '١': 'الأولى', '2': 'الثانية', '٢': 'الثانية' };
+    const resolveOrdinal = (v: string) => ordinals[v.trim()] ?? v.trim();
+    const examVal = resolveOrdinal(examInfo.exam);
+    const triVal = resolveOrdinal(examInfo.trimestre);
+    const triText = triVal.includes('دورة') ? triVal : `الدورة ${triVal}`;
+    return `بيان نقط  المراقبة : ${examVal} - ${triText}`;
+  };
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -85,7 +97,7 @@ export function GradeTable() {
     <>
 
       <div
-        className="grade-table-container bg-white relative rounded-lg w-full h-screen overflow-y-auto p-4"
+        className="a4-page-container bg-white relative rounded-lg max-w-[1000px] mx-auto h-screen overflow-y-auto p-4"
         style={{
           paddingTop: `${pagePaddingTop}px`,
           paddingLeft: `${pagePaddingX}px`,
@@ -99,7 +111,7 @@ export function GradeTable() {
           </div>
 
           <div className="absolute left-0 right-0 flex flex-col text-center">
-            <h1 className="text-2xl text-gray-800">بيان نقط المراقبة الأولى الدورة الأولى</h1>
+            <h1 className="text-2xl text-gray-800">{buildDocumentTitle()}</h1>
             <div className="text-lg text-gray-700">الموسم الدراسي 2025/2026</div>
           </div>
         </div>
