@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 
 interface LetterTableProps {
   studentName?: string;
@@ -16,23 +15,11 @@ export function LetterTable({
     <div className="dl-envelope-container relative flex flex-col">
       {/* Logo Header */}
       <div className="flex items-center justify-between mb-8 p-3">
-        <div className="w-26 h-26 relative ">
-          <Image
-            src="/leftLogo.png"
-            alt="Left Logo"
-                   className='w-26 h-26'
-                   width={100}
-                   height={100}
-          />
+        <div className="w-26 h-26">
+          <img src="/leftLogo.png" alt="Left Logo" className="w-full h-full object-contain" />
         </div>
-        <div className="w-26 h-26 relative ">
-          <Image
-            src="/rightLogo.png"
-            alt="Right Logo"
-            className='w-26 h-26'
-                  width={100}
-                   height={100}
-          />
+        <div className="w-26 h-26">
+          <img src="/rightLogo.png" alt="Right Logo" className="w-full h-full object-contain" />
         </div>
       </div>
 

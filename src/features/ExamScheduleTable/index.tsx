@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 
 interface ExamSession {
   subject: string;
@@ -80,26 +79,16 @@ export function ExamScheduleTable({ studentName = '', examNumber = '', examPosit
     <div className="a4-page-container max-w-[1000px] mx-auto p-8 md:p-12">
       {/* Logo Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="w-32 h-32 relative shrink-0">
-          <Image
-            src="/leftLogo.png"
-            alt="Left Logo"
-            fill
-            className="object-contain"
-          />
+        <div className="w-32 h-32 shrink-0">
+          <img src="/leftLogo.png" alt="Left Logo" className="w-full h-full object-contain" />
         </div>
         <div className="text-center px-4">
           <h1 className="text-2xl font-normal mb-1"> الامتحان الموحد على صعيد المؤسسة</h1>
           <h1 className="text-2xl font-normal mb-1">Examen normalisé local</h1>
           <p className="text-xl">Session : Janvier 2026</p>
         </div>
-        <div className="w-32 h-32 relative shrink-0">
-          <Image
-            src="/rightLogo.png"
-            alt="Right Logo"
-            fill
-            className="object-contain"
-          />
+        <div className="w-32 h-32 shrink-0">
+          <img src="/rightLogo.png" alt="Right Logo" className="w-full h-full object-contain" />
         </div>
       </div>
 
